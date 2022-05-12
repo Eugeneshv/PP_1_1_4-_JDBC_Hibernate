@@ -2,7 +2,6 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 
 import java.util.ArrayList;
@@ -20,33 +19,34 @@ public class UserDaoHibernateImpl implements UserDao {
     public void createUsersTable() {
         String SQL = "CREATE TABLE IF NOT EXISTS user (id int NOT NULL auto_increment, " +
                     "name varchar(64), lastname varchar(64), age int, PRIMARY KEY (id))";
-        Transaction transaction = null;
-            try (Session session = sessionFactory.openSession()) {
-                transaction = session.beginTransaction();
-                session.createSQLQuery(SQL).addEntity(User.class).executeUpdate();
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-                e.printStackTrace();
-            }
-
+        doWithUsersTable(SQL);
     }
 
 
     @Override
     public void dropUsersTable() {
         String SQL = "DROP TABLE if EXISTS user";
+        doWithUsersTable(SQL);
+    }
+
+
+    @Override
+    public void cleanUsersTable() {
+        String SQL = "DELETE FROM user";
+        doWithUsersTable(SQL);
+    }
+
+
+    private void doWithUsersTable(String SQL) {
         Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()){
             transaction = session.beginTransaction();
-            Query query = session.createSQLQuery(SQL).addEntity(User.class);
-            query.executeUpdate();
+            session.createSQLQuery(SQL).addEntity(User.class).executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -90,17 +90,6 @@ public class UserDaoHibernateImpl implements UserDao {
         return result;
     }
 
-    @Override
-    public void cleanUsersTable() {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()){
-            transaction = session.beginTransaction();
-            String SQL = "DELETE FROM user";
-            session.createSQLQuery(SQL).addEntity(User.class).executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            transaction.rollback();
-            e.printStackTrace();
-        }
-    }
+
+
 }
