@@ -13,7 +13,6 @@ public class Util {
     private static final String URL = "jdbc:mysql://localhost:3306/mydbtest?useSSL=false";
     private static final String USER = "root";
     private static final String PASSWORD = "MySQLpassword";
-    public static Connection connection;
     public static SessionFactory sessionFactory;
 
     static {
@@ -28,12 +27,11 @@ public class Util {
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
                 settings.put(Environment.SHOW_SQL, "true");
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-                //settings.put(Environment.HBM2DDL_AUTO, "create-drop");
                 configuration.setProperties(settings);
                 configuration.addAnnotatedClass(User.class);
-                StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+                StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                        .applySettings(configuration.getProperties()).build();
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

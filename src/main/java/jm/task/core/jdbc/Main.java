@@ -21,7 +21,7 @@ public class Main {
 
         for (int i = 0; i < 4; i++) {
             persons.saveUser(user.get(i).getName(), user.get(i).getLastName(), user.get(i).getAge());
-            System.out.printf("User с именем – %s добавлен в базу данных\n", user.get(i).getName());
+            System.out.printf("User с именем – %s добавлен в базу данных\n", persons.getAllUsers().get(i).getName());
         }
 
         System.out.printf(persons.getAllUsers().toString());
